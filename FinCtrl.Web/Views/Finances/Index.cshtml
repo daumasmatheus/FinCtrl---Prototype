@@ -1,0 +1,64 @@
+﻿@model IEnumerable<FinCtrl.Domain.Entities.Financas>
+
+@{
+    ViewBag.Title = "Minhas Financas";
+    int collapse = 1;
+}
+
+<div>
+    @foreach (var item in ViewBag.months)
+    {
+        <div class="accordion" id="financesAccordion">
+            <div class="card">
+                <div class="card-header" id="heading-@collapse">
+                    <h5>
+                        <a href="#" data-toggle="collapse" data-target="#collapse-@collapse" aria-expanded="true" aria-controls="heading-@collapse" class="text-capitalize">
+                            @System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(item)
+                        </a>
+                    </h5>
+                </div>
+                @foreach (var finData in Model.Where(x => x.Data.Month == item))
+                {
+                    <div id="collapse-@collapse" class="collapse show" aria-labelledby="heading-@collapse" data-parent="#financesAccordion">
+                        <div class="row">
+                            <a href="#" class="card-body link-details" data-value="@finData.Id">
+                                <div class="row">
+                                    <div class="col-sm-2 text-left">
+                                        @finData.Data.ToShortDateString()
+                                    </div>
+                                    @if (finData.TipoId == 1)
+                                    {
+                                        <div class="col-sm-2 text-danger text-left">-@String.Format("{0:C}", finData.Valor)</div>
+                                    }
+                                    else
+                                    {
+                                        <div class="col-sm-2 text-success text-left">+@String.Format("{0:C}", finData.Valor)</div>
+                                    }
+                                    <div class="col-sm-4 text-left">@finData.Nome</div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        collapse++;
+    }
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="financesModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Detalhes</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="conteudoModal">
+            </div>
+        </div>
+    </div>
+</div>
