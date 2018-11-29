@@ -24,11 +24,17 @@ textarea {
 }
 
 /*FinCtrl Styles*/
-
-.link-details {
-    display: block;    
+.link-details {    
+    margin: 5px;
+    border-left: 1px solid #d5d5d5;
+    border-bottom: 1px solid #d5d5d5;
+    color: black;
 }
+    .link-details:hover {
+        text-decoration: none;
+        color: black;
+    }
 
-.link-details:hover{
-    text-decoration: none;
+.alert {
+    margin-top: 10px;
 }

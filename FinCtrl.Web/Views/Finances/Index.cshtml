@@ -1,51 +1,36 @@
 ﻿@model IEnumerable<FinCtrl.Domain.Entities.Financas>
 
 @{
-    ViewBag.Title = "Minhas Financas";
-    int collapse = 1;
+    ViewBag.Title = "Minhas Financas";    
 }
 
-<div>
-    @foreach (var item in ViewBag.months)
-    {
-        <div class="accordion" id="financesAccordion">
-            <div class="card">
-                <div class="card-header" id="heading-@collapse">
-                    <h5>
-                        <a href="#" data-toggle="collapse" data-target="#collapse-@collapse" aria-expanded="true" aria-controls="heading-@collapse" class="text-capitalize">
-                            @System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(item)
-                        </a>
-                    </h5>
-                </div>
-                @foreach (var finData in Model.Where(x => x.Data.Month == item))
-                {
-                    <div id="collapse-@collapse" class="collapse show" aria-labelledby="heading-@collapse" data-parent="#financesAccordion">
-                        <div class="row">
-                            <a href="#" class="card-body link-details" data-value="@finData.Id">
-                                <div class="row">
-                                    <div class="col-sm-2 text-left">
-                                        @finData.Data.ToShortDateString()
-                                    </div>
-                                    @if (finData.TipoId == 1)
-                                    {
-                                        <div class="col-sm-2 text-danger text-left">-@String.Format("{0:C}", finData.Valor)</div>
-                                    }
-                                    else
-                                    {
-                                        <div class="col-sm-2 text-success text-left">+@String.Format("{0:C}", finData.Valor)</div>
-                                    }
-                                    <div class="col-sm-4 text-left">@finData.Nome</div>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                }
-            </div>
-        </div>
-
-        collapse++;
-    }
-</div>
+@foreach (var FinYrs in Model.Select(x => x.Data.Year).Distinct())
+{
+    <div class="alert alert-secondary">
+        <h4 class="font-weight-bold">
+            @FinYrs
+        </h4>       
+    </div>
+    <div class="row justify-content-around">
+        @foreach (var FinData in Model.Where(y => y.Data.Year == FinYrs).Distinct())
+        {
+            <a href="#" class="col-sm-3 link-details hvr-grow-shadow" data-value="@FinData.Id">
+                <div>
+                    <small>@FinData.Data.ToShortDateString()</small>
+                    @if (FinData.TipoId == 1)
+                    {
+                        <h3 class="text-danger text-center">-@String.Format("{0:C}", FinData.Valor)</h3>
+                    }
+                    else
+                    {
+                        <h3 class="text-success text-center">+@String.Format("{0:C}", FinData.Valor)</h3>
+                    }
+                    <p>@FinData.Nome</p>
+                </div>                
+            </a>
+        }
+    </div>
+}
 
 <!-- Modal -->
 <div class="modal fade" id="financesModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

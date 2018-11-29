@@ -4,5 +4,5 @@
         $("#conteudoModal").load("/Finances/Details/" + id, function () {
             $("#financesModal").modal("show");
         });
-    });
+    });       
 });
