@@ -1,0 +1,48 @@
+﻿@using Highsoft.Web.Mvc.Charts
+
+@{
+    ViewBag.Title = "UserDashboard";
+}
+
+<script src="~/Scripts/app/highcharts.js"></script>
+<script src="~/Scripts/app/exporting.js"></script>
+
+@(Html.Highsoft().Highcharts(
+            new Highcharts
+            {
+                Chart = new Highsoft.Web.Mvc.Charts.Chart
+                {
+                    Width = 1087,
+                    Height = 400,
+                    Type = ChartType.Pie
+                },
+                PlotOptions = new PlotOptions
+                {
+                    Pie = new PlotOptionsPie
+                    {
+                        AllowPointSelect = true,
+                        Cursor = PlotOptionsPieCursor.Pointer,
+                        DataLabels = new PlotOptionsPieDataLabels
+                        {
+                            Enabled = true,
+                            Format = "{point.name}: R${point.y}"
+                        }
+                    }
+                },
+                Tooltip = new Tooltip
+                {
+                    PointFormat = "{series.name}: R${point.y}"
+                },
+        Series = new List<Series>
+        {
+            new PieSeries
+            {
+                Name = "Test chart",
+                Data = ViewData["pieData"] as List<PieSeriesData>
+            }
+        }
+    }
+, "container")
+)
+
+<div id="container"></div>

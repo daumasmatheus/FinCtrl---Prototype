@@ -4,7 +4,15 @@
 
     <small>@Model.Data.ToShortDateString()</small>
     <p class="font-weight-bold">@Model.Nome</p>
-    <p class="@(Model.Tipo.Nome == "Despesa" ? "text-danger" : "text-success")">@String.Format("{0:C}", Model.Valor)</p>
+    @if (Model.TipoId == 1)
+    {
+        <p class="text-danger">-@String.Format("{0:C}", Model.Valor)</p>
+    }
+    else
+    {
+        <p class="text-success">+@String.Format("{0:C}", Model.Valor)</p>
+    }
+
     @if (!String.IsNullOrEmpty(Model.Observacao))
     {
         <small>Observação</small>

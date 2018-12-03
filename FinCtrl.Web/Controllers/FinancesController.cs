@@ -1,5 +1,8 @@
 ﻿using FinCtrl.Domain.Entities;
 using FinCtrl.Persistence;
+using Highsoft.Web.Mvc.Charts;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
@@ -15,13 +18,7 @@ namespace FinCtrl.Web.Controllers
         public ActionResult Index()
         {
             _ctx = new FinCtrlDbContext();
-
-            ViewBag.totalDespesas = _ctx.Financas.Where(x => x.Tipo.Id == 1).Select(x => x.Valor).Sum();
-            ViewBag.totalRendimentos = _ctx.Financas.Where(x => x.Tipo.Id == 2).Select(x => x.Valor).Sum();
-
-            ViewBag.months = _ctx.Financas.Select(x => x.Data.Month).Distinct();            
-
-            var finances = _ctx.Financas.OrderBy(x => x.Data).ToList();
+            var finances = _ctx.Financas.OrderBy(d => d.Data).ToList();
 
             return View(finances);
         }
@@ -79,7 +76,7 @@ namespace FinCtrl.Web.Controllers
         [ActionName("Edit")]
         public ActionResult EditConfirmed(Financas financa)
         {
-            _ctx = new FinCtrlDbContext();            
+            _ctx = new FinCtrlDbContext();
 
             if (ModelState.IsValid)
             {
@@ -90,7 +87,7 @@ namespace FinCtrl.Web.Controllers
             }
 
             return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-        }        
+        }
 
         [HttpPost]
         public ActionResult Delete(int id)
@@ -101,6 +98,34 @@ namespace FinCtrl.Web.Controllers
             _ctx.SaveChanges();
 
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public ActionResult UserDashboard()
+        {
+            _ctx = new FinCtrlDbContext();
+
+            var result = _ctx.Financas.Where(d => d.Data.Year == 2018 && d.TipoId == 1).ToList();
+
+            List<PieSeriesData> pieData = new List<PieSeriesData>();
+
+            foreach (var item in result)
+            {
+                pieData.Add(new PieSeriesData { Name = item.Data.ToShortDateString(),
+                                                Y = Convert.ToDouble(item.Valor) });                
+            }
+
+            //ViewBag.result = listVm;
+
+            ViewData["pieData"] = pieData;           
+
+            return View();
+        }
+
+        public class ViewModel
+        {
+            public decimal Y { get; set; }
+            public string Name { get; set; }
         }
     }
 }
